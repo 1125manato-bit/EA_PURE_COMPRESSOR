@@ -1,0 +1,28 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Build Script
+      shell: cmd
+      run: |
+        call build.bat
+
+    - name: Archive Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: EA-PURE-COMPRESSOR-Windows
+        path: |
+          build/EA_PURE_COMPRESSOR_artefacts/Release/VST3/**
+          build/EA_PURE_COMPRESSOR_artefacts/Release/**/*.dll
