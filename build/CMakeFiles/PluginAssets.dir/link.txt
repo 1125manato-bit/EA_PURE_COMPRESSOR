@@ -1,2 +1,0 @@
-/usr/bin/ar qc libPluginAssets.a CMakeFiles/PluginAssets.dir/juce_binarydata_PluginAssets/JuceLibraryCode/BinaryData1.cpp.o CMakeFiles/PluginAssets.dir/juce_binarydata_PluginAssets/JuceLibraryCode/BinaryData2.cpp.o CMakeFiles/PluginAssets.dir/juce_binarydata_PluginAssets/JuceLibraryCode/BinaryData3.cpp.o
-/usr/bin/ranlib libPluginAssets.a
