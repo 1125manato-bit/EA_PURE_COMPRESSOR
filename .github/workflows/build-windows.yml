@@ -19,10 +19,15 @@ jobs:
       run: |
         call build.bat
 
+    - name: Build Installer (Inno Setup)
+      uses: Minionguyjosh/Inno-Setup-Action@v1
+      with:
+        path: installer/windows/setup.iss
+        
     - name: Archive Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: EA-PURE-COMPRESSOR-Windows
         path: |
+          installer/windows/Output/*.exe
           build/EA_PURE_COMPRESSOR_artefacts/Release/VST3/**
-          build/EA_PURE_COMPRESSOR_artefacts/Release/**/*.dll
