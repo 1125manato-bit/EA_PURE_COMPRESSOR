@@ -14,7 +14,7 @@ EaPureCompressorAudioProcessorEditor::EaPureCompressorAudioProcessorEditor(
                             const juce::String &name,
                             const juce::String &paramId) {
     slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
-    slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
+    slider.setTextBoxStyle(juce::Slider::NoTextBox, true, 0, 0);
     addAndMakeVisible(slider);
 
     label.setText(name, juce::dontSendNotification);
@@ -102,7 +102,7 @@ void EaPureCompressorAudioProcessorEditor::paint(juce::Graphics &g) {
 
   // Meter Drawing
   g.setColour(juce::Colours::red); // Red Needle
-  float currentGR = audioProcessor.getGainReduction();
+  float currentGR = grLevel;
   float normalizedGR = juce::jlimit(0.0f, 1.0f, currentGR / 20.0f);
   float pivotX = meterArea.getCentreX();
   float pivotY = meterArea.getBottom() + 10;
@@ -151,11 +151,11 @@ void EaPureCompressorAudioProcessorEditor::resized() {
   }
 
   // 2. Exact Coordinates (User Provided Dump)
-  thresholdBounds = {94, 342, 228, 215};
-  gainBounds = {714, 341, 208, 216};
-  ratioBounds = {466, 317, 92, 112};
-  attackBounds = {363, 435, 98, 112};
-  releaseBounds = {565, 433, 94, 117};
+  thresholdBounds = {111, 297, 194, 280};
+  gainBounds = {720, 322, 193, 231};
+  ratioBounds = {465, 308, 92, 112};
+  attackBounds = {363, 426, 98, 112};
+  releaseBounds = {566, 422, 94, 117};
   meterBounds = {390, 130, 245, 131};
 
   updateLayoutBounds();
@@ -297,7 +297,20 @@ bool EaPureCompressorAudioProcessorEditor::keyPressed(
 }
 
 void EaPureCompressorAudioProcessorEditor::timerCallback() {
-  // repaint to update meter if we were pulling values
-  // getGR() implementation pending in Processor
+  float targetGR = audioProcessor.getGainReduction();
+
+  // Attack/Release smoothing
+  // 0.0 is no reduction (Right). Positive is reduction (Left).
+  // If target > current (more reduction/needle moves left), fast attack
+  // If target < current (less reduction/needle returns right), slow release
+
+  const float attackCoef = 0.3f;
+  const float releaseCoef = 0.02f; // Slow return
+
+  if (targetGR > grLevel)
+    grLevel += (targetGR - grLevel) * attackCoef;
+  else
+    grLevel += (targetGR - grLevel) * releaseCoef;
+
   repaint();
 }

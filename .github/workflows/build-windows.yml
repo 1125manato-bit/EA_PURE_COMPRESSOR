@@ -20,7 +20,7 @@ jobs:
         call build.bat
 
     - name: Build Installer (Inno Setup)
-      uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+      uses: Minionguyjosh/Inno-Setup-Action@v1
       with:
         path: installer/windows/setup.iss
         
